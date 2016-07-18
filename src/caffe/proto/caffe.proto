@@ -359,9 +359,11 @@ message LayerParameter {
   // engine parameter for selecting the implementation.
   // The default for the engine is set by the ENGINE switch at compile-time.
   optional AccuracyParameter accuracy_param = 102;
+  optional AddSweeperParameter add_sweeper_param = 147;
   optional ArgMaxParameter argmax_param = 103;
   optional BatchNormParameter batch_norm_param = 139;
   optional BiasParameter bias_param = 141;
+  optional BlParameter bl_param = 150;
   optional ConcatParameter concat_param = 104;
   optional ContrastiveLossParameter contrastive_loss_param = 105;
   optional ConvolutionParameter convolution_param = 106;
@@ -383,6 +385,7 @@ message LayerParameter {
   optional InputParameter input_param = 143;
   optional LogParameter log_param = 134;
   optional LRNParameter lrn_param = 118;
+  optional MaxNormalizeParameter max_normalize_param = 148;
   optional MemoryDataParameter memory_data_param = 119;
   optional MVNParameter mvn_param = 120;
   optional ParameterParameter parameter_param = 145;
@@ -397,6 +400,7 @@ message LayerParameter {
   optional ScaleParameter scale_param = 142;
   optional SigmoidParameter sigmoid_param = 124;
   optional SoftmaxParameter softmax_param = 125;
+  optional SortChParameter sort_ch_param = 149;
   optional SPPParameter spp_param = 132;
   optional SliceParameter slice_param = 126;
   optional TanHParameter tanh_param = 127;
@@ -474,6 +478,9 @@ message AccuracyParameter {
   // If specified, ignore instances with the given label.
   optional int32 ignore_label = 3;
 }
+message AddSweeperParameter {
+  optional int32 sweepern = 1 [default = 3];
+}
 
 message ArgMaxParameter {
   // If true produce pairs (argmax, maxval)
@@ -539,6 +546,10 @@ message BiasParameter {
   // Default is the zero (0) initialization, resulting in the BiasLayer
   // initially performing the identity operation.
   optional FillerParameter filler = 3;
+}
+message BlParameter {
+  optional uint32 base_size = 1 [default = 500];
+  optional uint32 newsize = 2 [default = 500];
 }
 
 message ContrastiveLossParameter {
@@ -856,7 +867,9 @@ message LRNParameter {
   }
   optional Engine engine = 6 [default = DEFAULT];
 }
-
+message MaxNormalizeParameter {
+  optional float prior = 1 [default = 3];
+}
 message MemoryDataParameter {
   optional uint32 batch_size = 1;
   optional uint32 channels = 2;
@@ -1184,7 +1197,10 @@ message WindowDataParameter {
   // append root_folder to locate images
   optional string root_folder = 13 [default = ""];
 }
-
+message SortChParameter {
+  optional int32 topk  = 1 [default = 3];
+  optional int32 ignore  = 2 [default = -1];
+}
 message SPPParameter {
   enum PoolMethod {
     MAX = 0;

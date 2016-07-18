@@ -32,7 +32,8 @@ def param_name_dict():
     # get all parameter names (typically underscore case) and corresponding
     # type names (typically camel case), which contain the layer names
     # (note that not all parameters correspond to layers, but we'll ignore that)
-    param_names = [f.name for f in layer.DESCRIPTOR.fields if f.name.endswith('_param')]
+    param_names = [s for s in dir(layer) if s.endswith('_param')]
+    #print param_names
     param_type_names = [type(getattr(layer, s)).__name__ for s in param_names]
     # strip the final '_param' or 'Parameter'
     param_names = [s[:-len('_param')] for s in param_names]
@@ -133,6 +134,7 @@ class Function(object):
             return
         bottom_names = []
         for inp in self.inputs:
+            #print inp
             inp._to_proto(layers, names, autonames)
             bottom_names.append(layers[inp.fn].top[inp.n])
         layer = caffe_pb2.LayerParameter()
@@ -152,8 +154,54 @@ class Function(object):
                 assign_proto(layer, k, v)
             else:
                 try:
+                    stn=self.type_name
+                    #print stn
+                    if stn=='DeconvNosize':
+                       stn='Convolution'
+                    if stn=='Deconvolution':
+                       stn='Convolution'
+                    if stn=='UnpoolingNoshape':
+                       stn='Pooling'
+                    if stn=='UnpoolingNoshapeNomask':
+                       stn='Pooling'
+                    if stn=='UnpoolingNomask':
+                       stn='Pooling'
+                    if stn=='BlNoshape':
+                       stn='Bl'
+                    if stn=='GuidedReLUNoshapeSet':
+                       stn='ReLU'
+                    if stn=='Sub':
+                       stn='ShapeDef'
+                    if stn=='SubStack':
+                       stn='ShapeDef'
+                    if stn=='EltwiseNoshape':
+                       stn='ShapeDef'
+                    if stn=='RestoreForDcsm':
+                       stn='ShapeDef'
+                    if stn=='SoftmaxWithLoss':
+                       stn='Loss'
+                    if stn=='BatchNormNoshape':
+                       stn='ShapeDef'
+                    if stn=='AlignConvnum':
+                       stn='ShapeDef'
+                    if stn=='Add':
+                       stn='ShapeDef'
+                    if stn=='Inv':
+                       stn='ShapeDef'
+                    if stn=='ReplaceDcsmbgWithmap':
+                       stn='ShapeDef'
+                    if stn=='AddSweeperFix':
+                       stn='AddSweeper'
+                    if stn=='AddSweeperDep':
+                       stn='AddSweeper'
+                    if stn=='MakeSignalFix':
+                       stn='AddSweeper'
+                    if stn=='MaxNormalizeFix':
+                       stn='MaxNormalize'
+                    if stn=='SubstackFix':
+                       stn='AddSweeper'
                     assign_proto(getattr(layer,
-                        _param_names[self.type_name] + '_param'), k, v)
+                        _param_names[stn] + '_param'), k, v)
                 except (AttributeError, KeyError):
                     assign_proto(layer, k, v)
 
@@ -175,11 +223,11 @@ class NetSpec(object):
     def __getattr__(self, name):
         return self.tops[name]
 
-    def __setitem__(self, key, value):
-        self.__setattr__(key, value)
+    def __setitem__(self,name,value):
+        self.tops[name] = value
 
-    def __getitem__(self, item):
-        return self.__getattr__(item)
+    def __getitem__(self,name):
+        return self.tops[name]
 
     def to_proto(self):
         names = {v: k for k, v in six.iteritems(self.tops)}
@@ -200,6 +248,7 @@ class Layers(object):
     def __getattr__(self, name):
         def layer_fn(*args, **kwargs):
             fn = Function(name, args, kwargs)
+            #print fn.ntop
             if fn.ntop == 0:
                 return fn
             elif fn.ntop == 1:
