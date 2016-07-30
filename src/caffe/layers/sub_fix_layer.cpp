@@ -22,8 +22,7 @@ void SubFixLayer<Dtype>::Forward_cpu(
   const Dtype* bottom_data = bottom[0]->cpu_data();
   Dtype* top_data = top[0]->mutable_cpu_data();
   const int inner_num=bottom[0]->height()*bottom[0]->width()*bottom[0]->channels();
-  for (int n = 0; n < 1; ++n) {
-  	for (int e1=0;e1<bottom[0]->num();++e1){
+  for (int e1=0;e1<bottom[0]->num();++e1){
   	  for (int e2=0;e2<bottom[0]->num();++e2){
 	     if(e1!=e2){
 	  	    caffe_copy(inner_num, bottom_data + bottom[0]->offset(e1, 0), top_data);
@@ -35,10 +34,7 @@ void SubFixLayer<Dtype>::Forward_cpu(
             top_data += top[0]->offset(1, 0);
   	  	  }
   	  }
-  	}
-  	bottom_data += bottom[0]->offset(bottom[0]->num(), 0);
   }
-
 }
 
 template <typename Dtype>
