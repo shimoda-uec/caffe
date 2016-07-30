@@ -22,7 +22,7 @@ namespace caffe {
  * NOTE: does not implement Backwards operation.
  */
 template <typename Dtype>
-class SubStackFIXLayer : public Layer<Dtype> {
+class SubStackFixLayer : public Layer<Dtype> {
  public:
   /**
    * @param param provides ArgMaxParameter argmax_param,
@@ -36,14 +36,14 @@ class SubStackFIXLayer : public Layer<Dtype> {
    *     if set, maximise along the specified axis else maximise the flattened
    *     trailing dimensions for each index of the first / num dimension.
    */
-  explicit SubStackFIXLayer(const LayerParameter& param)
+  explicit SubStackFixLayer(const LayerParameter& param)
       : Layer<Dtype>(param) {}
   virtual void LayerSetUp(const vector<Blob<Dtype>*>& bottom,
       const vector<Blob<Dtype>*>& top);
   virtual void Reshape(const vector<Blob<Dtype>*>& bottom,
       const vector<Blob<Dtype>*>& top);
 
-  virtual inline const char* type() const { return "SubStackFIX"; }
+  virtual inline const char* type() const { return "SubStackFix"; }
 
  protected:
   /**

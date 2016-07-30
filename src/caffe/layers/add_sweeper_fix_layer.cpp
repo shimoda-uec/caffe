@@ -40,7 +40,6 @@ void AddSweeperFixLayer<Dtype>::Forward_cpu(const vector<Blob<Dtype>*>& bottom,
        sortid += bottom[0]->offset(1, 0);
   } 
   sort(sweeperid_.begin(), sweeperid_.end());
-  int sid=0;
   for(int i=0;i<1;++i){
   	for (int j=0;j<sweepern_;++j){
 		sweeperid[j]=sweeperid_[j];
