@@ -16,7 +16,7 @@ __global__ void KernelForward(const int nthreads, const Dtype* const in,
     // find out the local offset
     const int w = index % width;
     const int h = (index / width) % height;
-    const int n = index / width / height /channels;
+    const int n = index / width / height;
     //const int offset = (n * channels + c) * h * w;
     //const Dtype* const in_slice = in + offset;
     Dtype km=-FLT_MAX;
